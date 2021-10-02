@@ -28,11 +28,6 @@ function getArticles() {
             article = resultatAPI;
               console.log(article);
             productCardName.innerHTML = article.name;
-            let colorSelect = document.getElementById("color-select");
-              for (let i = 0; i < article.colors.length; i++) {
-              let option = document.createElement("option");
-              option.innerText = article.colors[i];
-              ;}
             container.innerHTML += `            
             <article>
             <div class="item__img">
@@ -52,10 +47,8 @@ function getArticles() {
 
               <div class="item__content__settings">
                 <div class="item__content__settings__color">
-                  <label for="color-select">Choisir une taille :</label>
-                  <select name="color-select" id="colors">
-                      <option value="">--SVP, choisissez une couleur --</option>                       <option value="vert">$colorSelect.appendChild(option)</option>
-                      <option value="blanc">blanc</option> -->
+                  <label for="color-select">Choisir une couleur :</label>
+                  <select name="color-select" id="items-color">
                   </select>
                 </div>
 
@@ -71,6 +64,14 @@ function getArticles() {
 
             </div>
           </article>`
+
+          let colorcontainer = document.getElementById("items-color");
+          for (let i = 0; i < article.colors.length; i++) {
+            colorcontainer.innerHTML += 
+            `<option value="${article.colors[i]}">${article.colors[i]}</option>`;
+            console.log(article.colors.length);
+            ;}
+
               
             });
         }
