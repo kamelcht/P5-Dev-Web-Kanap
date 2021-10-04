@@ -7,6 +7,7 @@ main();
 
 function main() {
   getArticles();
+  addToCart();
 }
 
 // Récupérer l'article depuis l'API
@@ -54,7 +55,7 @@ function getArticles() {
 
                 <div class="item__content__settings__quantity">
                   <label for="itemQuantity">Nombre d'article(s) (1-100) :</label>
-                  <input type="number" name="itemQuantity" min="1" max="100" value="0" id="quantity">
+                  <input type="number" id ="kanapNumber" name="itemQuantity" min="1" max="100" value="0" id="quantity">
                 </div>
               </div>
 
@@ -76,3 +77,32 @@ function getArticles() {
             });
         }
 
+function addToCart() {
+  const addToCartBtn = document.querySelector("#addToCart");
+  const kanapNum = document.querySelector("#kanapNumber");
+
+  addToCartBtn.addEventListener('click', () => {
+    if (kanapNum.value > 0 && kanapNum.value < 100){
+      // ------ Création du produit qui sera ajouté au panier
+      let productAdded = {
+        name: kanap,
+        price: 100,
+        quantity: parseFloat(kanapNum.value),
+        _id: id,
+      };
+  }
+  // ----------------- Gestion du localStorage
+  let arrayProductsInCart = [];
+
+  // Si le localStorage existe, on récupère son contenu, on l'insère dans le tableau arrayProductsInCart, puis on le renvoit vers le localStorage avec le nouveau produit ajouté.
+    if (localStorage.getItem("products") !== null) {
+    arrayProductsInCart = JSON.parse(localStorage.getItem("products"));
+    }
+  // Si le LS est vide, on le crée avec le produit ajouté
+
+  arrayProductsInCart.push(productAdded);
+        localStorage.setItem("products", JSON.stringify(arrayProductsInCart));
+
+  
+}
+  )}
