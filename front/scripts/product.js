@@ -7,7 +7,6 @@ main();
 
 function main() {
   getArticles();
-  addToCart();
 }
 
 // Récupérer l'article depuis l'API
@@ -55,7 +54,7 @@ function getArticles() {
 
                 <div class="item__content__settings__quantity">
                   <label for="itemQuantity">Nombre d'article(s) (1-100) :</label>
-                  <input type="number" id ="kanapNumber" name="itemQuantity" min="1" max="100" value="0" id="quantity">
+                  <input type="number" id ="kanapNumber" name="itemQuantity" min="1" max="100" value="1" id="quantity">
                 </div>
               </div>
 
@@ -73,24 +72,33 @@ function getArticles() {
             console.log(article.colors.length);
             ;}
 
-              
+            addToCart(article);
+
             });
+
         }
 
-function addToCart() {
+
+function addToCart(exemple) {
   const addToCartBtn = document.querySelector("#addToCart");
   const kanapNum = document.querySelector("#kanapNumber");
-
+  console.log(addToCartBtn)
   addToCartBtn.addEventListener('click', () => {
-    if (kanapNum.value > 0 && kanapNum.value < 100){
+    let productAdded = {
+      name: exemple.name,
+      price: exemple.price,
+      quantity: parseFloat(kanapNum.value),
+      _id: id,
+    };
+    console.log(productAdded)
+
+    if (kanapNum.value <= 0 && kanapNum.value >= 100){
       // ------ Création du produit qui sera ajouté au panier
-      let productAdded = {
-        name: kanap,
-        price: 100,
-        quantity: parseFloat(kanapNum.value),
-        _id: id,
-      };
-  }
+      // evenment innerhtml quantité  ecvt 
+      console.log('pas de 0')
+      return;
+    }
+
   // ----------------- Gestion du localStorage
   let arrayProductsInCart = [];
 
@@ -102,6 +110,8 @@ function addToCart() {
 
   arrayProductsInCart.push(productAdded);
         localStorage.setItem("products", JSON.stringify(arrayProductsInCart));
+
+  console.log(productAdded)
 
   
 }
