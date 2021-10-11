@@ -26,7 +26,6 @@ function getArticles() {
             // On place les données reçues via l'API aux bons endroits sur la page
             let container = document.getElementById("items-product");
             article = resultatAPI;
-              console.log(article);
             productCardName.innerHTML = article.name;
             container.innerHTML += `            
             <article>
@@ -61,6 +60,10 @@ function getArticles() {
               <div class="item__content__addButton">
                 <button id="addToCart">Ajouter au panier</button>
               </div>
+              <div class="added-to-cart-confirmation">
+                        <p class="confirmation-text">
+                        </p>
+              </div>
 
             </div>
           </article>`
@@ -68,9 +71,12 @@ function getArticles() {
           let colorcontainer = document.getElementById("items-color");
           for (let i = 0; i < article.colors.length; i++) {
             colorcontainer.innerHTML += 
-            `<option value="${article.colors[i]}">${article.colors[i]}</option>`;
-            console.log(article.colors.length);
-            ;}
+            `<option id="colorvalue" value="${article.colors[i]}">${article.colors[i]}</option>`;
+
+         
+            }
+
+            
 
             addToCart(article);
 
@@ -80,18 +86,29 @@ function getArticles() {
 
 
 function addToCart(exemple) {
+              // mettre le choix de l'utilisateur dans une variable 
+              let idvalue = document.getElementById("items-color");
+ 
   const addToCartBtn = document.querySelector("#addToCart");
   const kanapNum = document.querySelector("#kanapNumber");
-  console.log(addToCartBtn)
+  const confirmation = document.querySelector(".added-to-cart-confirmation");
+  const textConfirmation = document.querySelector(".confirmation-text");
+
   addToCartBtn.addEventListener('click', () => {
+    
+
+    
     let productAdded = {
       name: exemple.name,
       price: exemple.price,
       quantity: parseFloat(kanapNum.value),
-      _id: id,
-    };
-    console.log(productAdded)
+      id_product: exemple._id,
+      id_product_color : idvalue.value,
+      imageUrl: exemple.imageUrl,
+      altTxt: exemple.altTxt,
 
+
+    };
     if (kanapNum.value <= 0 && kanapNum.value >= 100){
       // ------ Création du produit qui sera ajouté au panier
       // evenment innerhtml quantité  ecvt 
@@ -112,6 +129,11 @@ function addToCart(exemple) {
         localStorage.setItem("products", JSON.stringify(arrayProductsInCart));
 
   console.log(productAdded)
+
+  confirmation.style.visibility = "visible";
+      textConfirmation.innerHTML = `Vous avez ajouté ce produit à votre panier !`;
+      setTimeout("location.reload(true);", 120000);
+  
 
   
 }
