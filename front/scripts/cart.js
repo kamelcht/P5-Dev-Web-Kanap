@@ -1,5 +1,6 @@
 let cart = document.querySelector("#cart__items");
 let copyOfLS = JSON.parse(localStorage.getItem("products"));
+let btnsupprime = document.querySelector('.deleteItem');
 
 
 console.log(copyOfLS)
@@ -9,10 +10,14 @@ main();
 function main() {
   displayCart();
   countTotalInCart();
-  checkFormAndPostRequest();
 }
 
 function displayCart() {
+    if (copyOfLS === null || copyOfLS == 0){
+      cart.innerHTML += `Votre panier est vide !`
+        }
+
+
     for (let products in copyOfLS) {
         cart.innerHTML += `<article class="cart__item" data-id="${copyOfLS[products].id}">
         <div class="cart__item__img">
@@ -21,6 +26,7 @@ function displayCart() {
         <div class="cart__item__content">
           <div class="cart__item__content__titlePrice">
             <h2>${copyOfLS[products].name}</h2>
+            <p class="color">${copyOfLS[products].id_product_color}</p>
             <p class="price">${copyOfLS[products].price*copyOfLS[products].quantity} €</p>
           </div>
           <div class="cart__item__content__settings">
@@ -34,10 +40,14 @@ function displayCart() {
           </div>
         </div>
       </article>`
-}}
+}
+  // gerer le bouton suppr
+
+}
 
 function countTotalInCart() {
     let arrayOfPrice = [];
+    console.log(arrayOfPrice);
     let totalPrice = document.querySelector("#totalPrice");
   
     // On push chaque prix du DOM dans un tableau
@@ -67,3 +77,5 @@ function countTotalInCart() {
       }
     ).format(arrayOfPrice))}`;
   }
+
+
