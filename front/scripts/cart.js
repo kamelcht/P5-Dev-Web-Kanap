@@ -1,6 +1,6 @@
 let cart = document.querySelector("#cart__items");
 let copyOfLS = JSON.parse(localStorage.getItem("products"));
-let btnsupprime = document.querySelector('.deleteItem');
+
 
 
 console.log(copyOfLS)
@@ -10,6 +10,7 @@ main();
 function main() {
   displayCart();
   countTotalInCart();
+  checkFormAndPostRequest()
 }
 
 function displayCart() {
@@ -35,19 +36,40 @@ function displayCart() {
               <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${copyOfLS[products].quantity}">
             </div>
             <div class="cart__item__content__settings__delete">
-              <p class="deleteItem">Supprimer</p>
+              <p class="deleteItem"><button class="btn_supr"> Supprimer</button></p>
             </div>
           </div>
         </div>
       </article>`
-}
+    }
   // gerer le bouton suppr
+  let btnsupprime = document.getElementsByClassName("btn_supr");
+  arrayProductsInCart = JSON.parse(localStorage.getItem("products"));
+  console.log(btnsupprime)
+  for (let l = 0; l < btnsupprime.length; l++){
+    btnsupprime[l].addEventListener('click', () =>{
 
-}
+      let id_selection_suppr = copyOfLS[l];
+      console.log(id_selection_suppr.id_product)
+      for (index = 0; index < arrayProductsInCart.length; index++) {
+        const element = arrayProductsInCart[index];
+        if (element.id_product === id_selection_suppr.id_product && element.id_product_color === id_selection_suppr.id_product_color){
+          arrayProductsInCart.splice(index, 1);
+
+        }
+      
+
+      }
+
+      localStorage.setItem("products", JSON.stringify(arrayProductsInCart));
+      window.location.reload();
+      
+  })
+
+}}
 
 function countTotalInCart() {
     let arrayOfPrice = [];
-    console.log(arrayOfPrice);
     let totalPrice = document.querySelector("#totalPrice");
   
     // On push chaque prix du DOM dans un tableau
@@ -79,3 +101,47 @@ function countTotalInCart() {
   }
 
 
+  function checkFormAndPostRequest() {
+
+    // On récupère les inputs depuis le DOM.
+    const submit = document.querySelector("#order");
+    let inputName = document.querySelector("#firstName");
+    let inputLastName = document.querySelector("#lastName");
+    let inputCity = document.querySelector("#city");
+    let inputAdress = document.querySelector("#address");
+    let inputMail = document.querySelector("#email");
+    submit.addEventListener("click", (e) => {
+       if (
+        /* !inputName.value ||
+        !inputLastName.value ||
+        !inputCity.value ||
+        !inputAddress.value ||
+        !inputMail.value */
+        1 === 2
+      ) {
+        erreur.innerHTML = "Vous devez renseigner tous les champs !";
+        e.preventDefault();
+      } else {
+  
+        // Si le formulaire est valide, le tableau productsBought contiendra un tableau d'objet qui sont les produits acheté, et infoclient contiendra ce tableau ainsi que l'objet qui contient les infos de l'acheteur
+        let productsBought = [];
+        productsBought.push(copyOfLS);
+  
+        const infoclient = {
+          contact: {
+            firstName: inputName.value,
+            lastName: inputLastName.value,
+            city: inputCity.value,
+            address: inputAdress.value,
+            email: inputMail.value,
+          },
+          products: productsBought,
+        };
+
+        
+  
+
+
+      }
+    });
+  }

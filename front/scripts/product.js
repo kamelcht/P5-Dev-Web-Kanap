@@ -118,15 +118,31 @@ function addToCart(exemple) {
 
   // ----------------- Gestion du localStorage
   let arrayProductsInCart = [];
+  let isFounded = false
+
 
   // Si le localStorage existe, on récupère son contenu, on l'insère dans le tableau arrayProductsInCart, puis on le renvoit vers le localStorage avec le nouveau produit ajouté.
     if (localStorage.getItem("products") !== null) {
-    arrayProductsInCart = JSON.parse(localStorage.getItem("products"));
+
+
+      arrayProductsInCart = JSON.parse(localStorage.getItem("products"));
+      for (index = 0; index < arrayProductsInCart.length; index++) {
+        const element = arrayProductsInCart[index];
+        if (element.id_product === productAdded.id_product && element.id_product_color === productAdded.id_product_color){
+          element.quantity = element.quantity + productAdded.quantity
+          isFounded = true;
+          break
+        }
+      }
+    
     }
   // Si le LS est vide, on le crée avec le produit ajouté
 
-  arrayProductsInCart.push(productAdded);
-        localStorage.setItem("products", JSON.stringify(arrayProductsInCart));
+  if (!isFounded){
+    arrayProductsInCart.push(productAdded);
+  }
+
+  localStorage.setItem("products", JSON.stringify(arrayProductsInCart));
 
   console.log(productAdded)
 
