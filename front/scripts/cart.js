@@ -1,10 +1,6 @@
 let cart = document.querySelector("#cart__items");
 let copyOfLS = JSON.parse(localStorage.getItem("products"));
 
-
-
-console.log(copyOfLS)
-
 main();
 
 function main() {
@@ -45,7 +41,6 @@ function displayCart() {
   // gerer le bouton suppr
   let btnsupprime = document.getElementsByClassName("btn_supr");
   arrayProductsInCart = JSON.parse(localStorage.getItem("products"));
-  console.log(btnsupprime)
   for (let l = 0; l < btnsupprime.length; l++){
     btnsupprime[l].addEventListener('click', () =>{
 
@@ -99,49 +94,66 @@ function countTotalInCart() {
       }
     ).format(arrayOfPrice))}`;
   }
+  
 
 
   function checkFormAndPostRequest() {
 
     // On récupère les inputs depuis le DOM.
     const submit = document.querySelector("#order");
-    let inputName = document.querySelector("#firstName");
-    let inputLastName = document.querySelector("#lastName");
-    let inputCity = document.querySelector("#city");
-    let inputAdress = document.querySelector("#address");
-    let inputMail = document.querySelector("#email");
+    let inputName = document.querySelector("#firstName").value;
+    let inputLastName = document.querySelector("#lastName").value;
+    let inputCity = document.querySelector("#city").value;
+    let inputAddress = document.querySelector("#address").value;
+    let inputMail = document.querySelector("#email").value;
+
+    let orderls = {
+      contact: {
+        firstName: inputName.value,
+        lastName: inputLastName.value,
+        city: inputCity.value,
+        address: inputAddress.value,
+        email: inputMail.value,
+      },
+    };
+
     submit.addEventListener("click", (e) => {
        if (
-        /* !inputName.value ||
-        !inputLastName.value ||
-        !inputCity.value ||
-        !inputAddress.value ||
-        !inputMail.value */
-        1 === 2
+        inputName ||
+        inputLastName ||
+        inputCity ||
+        inputAddress ||
+        inputMail 
       ) {
         erreur.innerHTML = "Vous devez renseigner tous les champs !";
         e.preventDefault();
       } else {
-  
-        // Si le formulaire est valide, le tableau productsBought contiendra un tableau d'objet qui sont les produits acheté, et infoclient contiendra ce tableau ainsi que l'objet qui contient les infos de l'acheteur
-        let productsBought = [];
-        productsBought.push(copyOfLS);
-  
-        const infoclient = {
-          contact: {
-            firstName: inputName.value,
-            lastName: inputLastName.value,
-            city: inputCity.value,
-            address: inputAdress.value,
-            email: inputMail.value,
-          },
-          products: productsBought,
-        };
+        localStorage.setItem("firstName", document.querySelector("#firstName").value);
+        localStorage.setItem("lastName", document.querySelector("#lastName").value);
+        localStorage.setItem("city", document.querySelector("#city").value);
+        localStorage.setItem("address", document.querySelector("#address").value);
+        localStorage.setItem("email", document.querySelector("#email").value);
 
         
+        /*
   
 
+      fetch("http://localhost:3000/api/products/order", options)
+      .then((response) => response.json())
+      .then((data) => {
+        localStorage.clear();
+        console.log(data)
+        localStorage.setItem("orderId", data.orderId);
+        localStorage.setItem("total", priceConfirmation[1]);
 
-      }
+        //  On peut commenter cette ligne pour vérifier le statut 201 de la requête fetch. Le fait de préciser la destination du lien ici et non dans la balise <a> du HTML permet d'avoir le temps de placer les éléments comme l'orderId dans le localStorage avant le changement de page.
+         document.location.href = "confirmation.html";
+      })
+      .catch((err) => {
+        alert("Il y a eu une erreur : " + err);
+      });
+    */}
     });
   }
+
+  
