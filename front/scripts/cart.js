@@ -1,6 +1,17 @@
 let cart = document.querySelector("#cart__items");
 let copyOfLS = JSON.parse(localStorage.getItem("products"));
 
+let products = [];
+for (o = 0; o < copyOfLS.length; o++) {
+  let productsId =
+  copyOfLS[o].id_product;
+  products.push(productsId);
+}
+
+console.log("products");
+console.log(products);
+
+
 main();
 
 function main() {
@@ -84,7 +95,8 @@ function countTotalInCart() {
     // Additionner les valeurs du tableau pour avoir le prix total
     const reducer = (acc, currentVal) => acc + currentVal;
     arrayOfPrice = arrayOfPrice.reduce(reducer);
-  
+    localStorage.setItem("priceTotal", JSON.stringify(arrayOfPrice));
+
     // Affichage du prix avec formatage €
     totalPrice.innerText = `Total : ${(arrayOfPrice = new Intl.NumberFormat(
       "fr-FR",
@@ -101,59 +113,93 @@ function countTotalInCart() {
 
     // On récupère les inputs depuis le DOM.
     const submit = document.querySelector("#order");
-    let inputName = document.querySelector("#firstName").value;
-    let inputLastName = document.querySelector("#lastName").value;
-    let inputCity = document.querySelector("#city").value;
-    let inputAddress = document.querySelector("#address").value;
-    let inputMail = document.querySelector("#email").value;
 
-    let orderls = {
-      contact: {
-        firstName: inputName.value,
-        lastName: inputLastName.value,
-        city: inputCity.value,
-        address: inputAddress.value,
-        email: inputMail.value,
-      },
-    };
 
     submit.addEventListener("click", (e) => {
+
+      let inputName = document.querySelector("#firstName").value;
+      let inputLastName = document.querySelector("#lastName").value;
+      let inputCity = document.querySelector("#city").value;
+      let inputAddress = document.querySelector("#address").value;
+      let inputMail = document.querySelector("#email").value;
+  
        if (
-        inputName ||
-        inputLastName ||
-        inputCity ||
-        inputAddress ||
-        inputMail 
+        !inputName ||
+        !inputLastName ||
+        !inputCity ||
+        !inputAddress ||
+        !inputMail 
       ) {
         erreur.innerHTML = "Vous devez renseigner tous les champs !";
         e.preventDefault();
       } else {
-        localStorage.setItem("firstName", document.querySelector("#firstName").value);
-        localStorage.setItem("lastName", document.querySelector("#lastName").value);
-        localStorage.setItem("city", document.querySelector("#city").value);
-        localStorage.setItem("address", document.querySelector("#address").value);
-        localStorage.setItem("email", document.querySelector("#email").value);
+
+          const contact = {
+            firstName : inputName,
+            lastName: inputLastName,
+            address: inputAddress,
+            city: inputCity,
+            email: inputMail,
+          }
+
+
+      const aEnvoyer = {
+        contact,
+        products,
+      };
+
+      envoieVersServeur(aEnvoyer);
+
+    }
+
 
         
-        /*
-  
-
-      fetch("http://localhost:3000/api/products/order", options)
-      .then((response) => response.json())
-      .then((data) => {
-        localStorage.clear();
-        console.log(data)
-        localStorage.setItem("orderId", data.orderId);
-        localStorage.setItem("total", priceConfirmation[1]);
-
-        //  On peut commenter cette ligne pour vérifier le statut 201 de la requête fetch. Le fait de préciser la destination du lien ici et non dans la balise <a> du HTML permet d'avoir le temps de placer les éléments comme l'orderId dans le localStorage avant le changement de page.
-         document.location.href = "confirmation.html";
-      })
-      .catch((err) => {
-        alert("Il y a eu une erreur : " + err);
-      });
-    */}
     });
+
+    function envoieVersServeur(aEnvoyer) {
+      //Envoie de l'objet "aEnvoyer" vers le serveur
+      const promise01 = fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        body: JSON.stringify(aEnvoyer),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      //Pour voir le résultat du serveur dans la console
+      promise01.then(async (response) => {
+        //Si la promesse n'est pas résolu, si elle est rejeté - gestions des erreurs
+        try {
+          const contenu = await response.json();
+          console.log("contenu de response");
+          console.log(contenu);
+  
+          if (response.ok) {
+            console.log(`Resultat de response.ok : ${response.ok}`);
+  
+            //Récupération de l'id de la response du serveur
+            console.log("id de response");
+            console.log(contenu.orderId);
+  
+            //Mettre l'id dans le local storage
+            localStorage.setItem("responseId", contenu.orderId);
+  
+            //Aller vers la page confirmation-commande
+            window.location = "confirmation.html";
+          } else {
+            console.log(`Réponse du serveur : ${response.status}`);
+            alert(`Problème avec le serveur : erreur ${response.status}`);
+          }
+        } catch (e) {
+          console.log("ERREUR qui vient du catch()");
+          console.log(e);
+          alert(`ERREUR qui vient du catch() ${e}`);
+        }
+      });
+    }
+
   }
+
+
 
   
